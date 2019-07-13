@@ -1,0 +1,230 @@
+user:jesus
+pass:servidorglosbe##123
+
+
+CREATE DATABASE data_glosbe;
+
+USE data_glosbe;
+
+SET NAMES utf8 ;
+
+CREATE TABLE `administradores` (
+  `id_admi` int(11) NOT NULL AUTO_INCREMENT,
+  `usuario_admi` varchar(45) NOT NULL,
+  `password_admi` varchar(45) NOT NULL,
+  `nombre_admi` varchar(100) NOT NULL,
+  `apellido_admi` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_admi`),
+  UNIQUE KEY `usuario_UNIQUE` (`usuario_admi`),
+  UNIQUE KEY `password_UNIQUE` (`password_admi`),
+  UNIQUE KEY `nombre_UNIQUE` (`nombre_admi`),
+  UNIQUE KEY `apellido_UNIQUE` (`apellido_admi`)
+);
+
+CREATE TABLE `tipo_colegio` (
+  `id_tipo` int NOT NULL AUTO_INCREMENT,
+  `tipo` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_tipo`)
+);
+
+CREATE TABLE `distrito_colegio` (
+  `id_distrito` int NOT NULL AUTO_INCREMENT,
+  `distrito` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_distrito`)
+);
+
+CREATE TABLE `director` (
+  `id_dir` int(11) NOT NULL AUTO_INCREMENT,
+  `nombres_dir` varchar(100) NOT NULL,
+  `ape_pat_dir` varchar(45) NOT NULL,
+  `ape_mat_dir` varchar(45) NOT NULL,
+  `cod_dir` int(7) NOT NULL,
+  `DNI_dir` int(8) NOT NULL,
+  `usuario_dir` varchar(45) NOT NULL,
+  `password_dir` varchar(45) NOT NULL,
+  `edad_dir` int(11) NOT NULL,
+  `sexo_dire` varchar(15) NOT NULL,
+  `grado_acade` varchar(50),
+  `carrera` varchar(100),
+  `id_distrito` int NOT NULL,
+  `fecha_entrada` date NOT NULL,
+   PRIMARY KEY (`id_dir`),
+   UNIQUE KEY `usuario_UNIQUE` (`usuario_dir`),
+   UNIQUE KEY `DNI_UNIQUE` (`DNI_dir`),
+   UNIQUE KEY `cod_UNIQUE` (`cod_dir`),
+   KEY `id_distrito_idx` (`id_distrito`),
+   CONSTRAINT `id_distrito` FOREIGN KEY (`id_distrito`) REFERENCES `distrito_colegio` (`id_distrito`)
+);
+
+CREATE TABLE `alumno` (
+  `id_alu` int(11) NOT NULL AUTO_INCREMENT,
+  `DNI_alu` int(8) NOT NULL,
+  `nombres_alu` varchar(100) NOT NULL,
+  `ape_pat_alu` varchar(45) NOT NULL,
+  `ape_mat_alu` varchar(45) NOT NULL,
+  `edad_alu` int(11) NOT NULL,
+  `fecha_nac_alu` date NOT NULL,
+  `cole_proced` varchar(45) DEFAULT 'Ninguno',
+   PRIMARY KEY (`id_alu`),
+   UNIQUE KEY `DNI_UNIQUE` (`DNI_alu`)
+);
+
+CREATE TABLE `apoderado` (
+  `id_apo` int(11) NOT NULL AUTO_INCREMENT,
+  `DNI_apo` int(8) NOT NULL,
+  `nombres_apo` varchar(100) NOT NULL,
+  `ape_pat_apo` varchar(45) NOT NULL,
+  `ape_mat_apo` varchar(45) NOT NULL,
+  `edad_apo` int(11) NOT NULL,
+  `fecha_nac_apo` date NOT NULL,
+  `cel_apo` int(9) NOT NULL,
+  `gmail_apo` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `residencia_apo` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  PRIMARY KEY (`id_apo`),
+  UNIQUE KEY `DNI_UNIQUE` (`DNI_apo`)
+);
+
+CREATE TABLE `ugel` (
+  `id_ugel` int(11) NOT NULL AUTO_INCREMENT,
+  `num_ugel` int(11) NOT NULL,
+  PRIMARY KEY (`id_ugel`)
+);
+
+CREATE TABLE `colegio` (
+  `id_colegio` int(11) NOT NULL,
+  `nombre_col` varchar(100) NOT NULL,
+  `num_salones` int(11) NOT NULL,
+  `num_personal` int(11) NOT NULL,
+  `extra` varchar(100) DEFAULT 'Ninguno',
+  `id_director` int(11) NOT NULL,
+  `id_ugel` int(11) NOT NULL,
+  `id_tipo` int NOT NULL,
+  `id_distri` int NOT NULL,
+  PRIMARY KEY (`id_colegio`),
+  KEY `id_director_idx` (`id_director`),
+  KEY `id_ugel_idx` (`id_ugel`),
+  KEY `id_tipo_idx` (`id_tipo`),
+  KEY `id_distrito_idx` (`id_distri`),
+  CONSTRAINT `id_director` FOREIGN KEY (`id_director`) REFERENCES `director` (`id_dir`),
+  CONSTRAINT `id_distri` FOREIGN KEY (`id_distri`) REFERENCES `distrito_colegio` (`id_distrito`),
+  CONSTRAINT `id_tipo` FOREIGN KEY (`id_tipo`) REFERENCES `tipo_colegio` (`id_tipo`),
+  CONSTRAINT `id_ugel` FOREIGN KEY (`id_ugel`) REFERENCES `ugel` (`id_ugel`)
+);
+
+CREATE TABLE `grado` (
+  `id_grado` int(11) NOT NULL AUTO_INCREMENT,
+  `orden_grado` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_grado`)
+);
+
+CREATE TABLE `niveles` (
+  `id_nivel` int(11) NOT NULL AUTO_INCREMENT,
+  `nivel_academico` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_nivel`)
+);
+
+CREATE TABLE `vacantes` (
+  `id_colegio` int(11) NOT NULL,
+  `id_grado` int(11) NOT NULL,
+  `id_nivel` int(11) NOT NULL,
+  `vacantes_total` int(11) NOT NULL,
+  PRIMARY KEY (`id_colegio`,`id_nivel`,`id_grado`),
+  KEY `id_grado_idx` (`id_grado`),
+  KEY `id_nivel_idx` (`id_nivel`),
+  CONSTRAINT `id_colegio` FOREIGN KEY (`id_colegio`) REFERENCES `colegio` (`id_colegio`),
+  CONSTRAINT `id_grado` FOREIGN KEY (`id_grado`) REFERENCES `grado` (`id_grado`),
+  CONSTRAINT `id_nivel` FOREIGN KEY (`id_nivel`) REFERENCES `niveles` (`id_nivel`)
+);
+
+CREATE TABLE `colegio_aceptado` (
+  `id_codigo` int(11) NOT NULL,
+  `id_cole` int(11) NOT NULL,
+  `fecha_entrada` date NOT NULL,
+  PRIMARY KEY (`id_codigo`),
+   KEY `id_cole_idx` (`id_cole`),
+  CONSTRAINT `id_cole` FOREIGN KEY (`id_cole`) REFERENCES `colegio` (`id_colegio`)
+);
+
+
+CREATE TABLE `reserva` (
+  `id_reserva` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha_reserva` date NOT NULL,
+  `id_alumno` int(11) NOT NULL,
+  `id_cole_data` int(11) NOT NULL,
+  `id_apoderado` int(11) NOT NULL,
+  PRIMARY KEY (`id_reserva`),
+  KEY `id_alumno_idx` (`id_alumno`),
+  KEY `id_colegio_idx` (`id_cole_data`),
+  KEY `id_apoderado_idx` (`id_apoderado`),
+  CONSTRAINT `id_alumno` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id_alu`),
+  CONSTRAINT `id_apoderado` FOREIGN KEY (`id_apoderado`) REFERENCES `apoderado` (`id_apo`),
+  CONSTRAINT `id_cole_data` FOREIGN KEY (`id_cole_data`) REFERENCES `colegio_aceptado` (`id_codigo`)
+);
+
+CREATE TABLE `matricula_colegio` (
+  `id_matri` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha_matri` date NOT NULL,
+  `id_reserva` int(11) NOT NULL,
+  `costo_matri` double NOT NULL,
+  PRIMARY KEY (`id_matri`),
+  KEY `id_reserva_idx` (`id_reserva`),
+  CONSTRAINT `id_reserva` FOREIGN KEY (`id_reserva`) REFERENCES `reserva` (`id_reserva`)
+);
+
+
+INSERT INTO administradores (usuario_admi, password_admi, nombre_admi, apellido_admi) VALUES ('PlataformaGLOSBE','GLOSBE##123','Equipo', 'GLOSBE'),
+('ErnCan2019Requisitos', 'ErnCan##2019','Ernesto', 'Cancho'),('ElizMur2019BaseDatos','ElizMur##2019','Elizabeth','Murakami');
+
+    UPDATE administradores
+    SET usuario_admi = 'Ernesto Cancho - Requisitos'
+    WHERE nombre_admi='Ernesto';
+
+    UPDATE administradores
+    SET usuario_admi = 'Elizabeth Murakami - Base de Datos'
+    WHERE nombre_admi='Elizabeth';
+
+INSERT INTO tipo_colegio (tipo) VALUES ('Nacional'),('Particular');
+
+    SELECT *FROM tipo_colegio;
+
+INSERT INTO distrito_colegio (distrito) VALUES ('Ancón'),('Ate'),('Barranco'),('Breña'),('Carabayllo'),('Chaclacayo')
+    ,('Chorrillos'),('Cieneguilla'),('Comas'),('El Agustino'),('Independencia'),('Jesús María'),('La Molina'),('La Victoria')
+    ,('Lima'),('Lince'),('Los Olivos'),('Lurigancho-Chosica'),('Lurín'),('Magdalena del Mar'),('Miraflores'),('Pachacámac')
+    ,('Pucasana'),('Pueblo Libre'), ('Puente Piedra'),('Punta Hermosa'),('Punta Negra'),('Rímac'),('San Bartolo'),('San Borja')
+    ,('San Isidro'),('San Juan de Lurigancho'),('San Juan de Miraflores'),('San Luis'),('San Martin de Porres'),('San Miguel')
+    ,('Santa Anita'),('Santa María del Mar'),('Santa Rosa'),('Santiago de Surco'),('Surquillo'),('Villa el Salvador')
+    ,('Viila Maria del Triunfo');
+
+    SELECT * FROM distrito_colegio;
+
+INSERT INTO director(nombres_dir, ape_pat_dir, ape_mat_dir, cod_dir, DNI_dir, usuario_dir, password_dir,
+edad_dir, sexo_dire, grado_acade, carrera, id_distrito, fecha_entrada) VALUES ('Pedro Ernesto', 'Canta', 'Silva'
+, 2218994, 10068047, 'Pedro@minedu.com', 'PedroCS##2019',40, 'Hombre', 'Bachiller', 'Ingeniería Industrial', 5, (select now()));
+ 
+   SELECT * FROM director;
+
+INSERT INTO ugel(num_ugel) VALUES (1),(2),(3),(4),(5),(6),(7);
+
+    SELECT * FROM ugel;
+
+INSERT INTO grado(orden_grado) VALUES ('Tres años'),('Cuatro años'),('Cinco años'),('Primero prim'),('Segundo prim'),('Tercero prim')
+,('Cuarto prim'),('Quinto prim'),('Sexto prim'),('Primero sec'),('Segundo sec'),('Tercero sec'),('Cuarto sec'),('Quinto sec');
+
+    SELECT * FROM grado;
+
+INSERT INTO niveles(nivel_academico) VALUES ('Inicial'),('Primaria'),('Secundaria');
+
+    SELECT * FROM niveles;
+
+INSERT INTO colegio VALUES (1548872,'Virgen de Vírgenes',40,25,'Partida de Nacimiento',1,5,2,19);
+    SELECT * FROM colegio;
+
+
+CREATE VIEW data_sesion
+    AS SELECT di.id_dir,di.nombres_dir,di.usuario_dir,di.password_dir, 
+              co.id_colegio,co.nombre_col, co.num_salones, co.num_personal,
+              co.extra, co.id_ugel, co.id_tipo, co.id_distri, ti.tipo, dis.distrito 
+FROM director di, colegio co, tipo_colegio ti, distrito_colegio dis
+WHERE di.id_dir=co.id_director AND co.id_tipo=ti.id_tipo AND co.id_distri=dis.id_distrito ;
+
+SELECT * FROM data_sesion;

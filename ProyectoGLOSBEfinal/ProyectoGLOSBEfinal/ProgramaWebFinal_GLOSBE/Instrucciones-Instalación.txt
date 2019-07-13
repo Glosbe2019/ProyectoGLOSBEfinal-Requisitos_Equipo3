@@ -1,0 +1,13 @@
+Buenas... 
+Guía de instalación : :
+1ero --> Tener apache tomcat correctamente instalado y configurado para un servidor local.
+2do --> Contar con xampp para poder abrir el phpadmiyn
+3ero --> Tener NetBeans para poder ejecutar y abrir el archivo
+Comenzemos:
+	Descomprima el archivo .war
+	Abra el NetBeans, abra el archivo descomprimido
+	Entre en phpadmiyn como otro usuario diferente a ROOT
+	En escribir sentencia SQL copie todo el documento data_GLOSBE.txt y ejecute
+	Pruebe ejecutar el archivo de NetBeans con Google Chrome o Mozila Firefox
+	
+Cualquier problema o incoveniente --> contacte wsp : 941 872 518 // gmail : jesusadrianqp@gmail.com
